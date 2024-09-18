@@ -6,10 +6,12 @@ import { RoutePath } from "../../constants/path";
 type MenuItem = Required<MenuProps>['items'][number];
 
 export const LISTMENU: MenuItem[] = [
- 
+
   {
     key: 'account',
-    label: 'Quản lý Sản Phẩm',
+    label: (
+      <a href={`http://localhost:5173/${RoutePath.PRODUCTS}`}>Quản lý  phẩm</a>
+    ),
     icon: <UserOutlined />,
   },
   {

@@ -1,6 +1,6 @@
 export const RoutePath = {
     ADMIN: '/',
     CATEGORY: 'categories',
-    SEARCH : 'search/:key',
+    SEARCH: 'search/:key',
     PRODUCTS: 'products'
 }
