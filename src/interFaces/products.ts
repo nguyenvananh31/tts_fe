@@ -1,9 +1,9 @@
-export interface IProduct {
+export interface Icate {
     id?: number;
     name: string;
     price: number;
     quantity: number;
-    image: string[];
+    image:string[];
     description: string;
     sortdescriptions: number[];
 }
