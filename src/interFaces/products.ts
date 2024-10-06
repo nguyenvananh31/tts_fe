@@ -6,4 +6,5 @@ export interface IProduct {
     image: string[];
     description: string;
     sortdescriptions: number[];
+
 }

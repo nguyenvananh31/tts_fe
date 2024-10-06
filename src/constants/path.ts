@@ -1,6 +1,12 @@
 export const RoutePath = {
     ADMIN: '/',
-    CATEGORY: 'categories',
     SEARCH: 'search/:key',
-    PRODUCTS: 'products'
+    //cate
+    CATEGORY: 'categories',
+    ADD_CATEGORY: 'add-cate',
+    EDIT_CATEGORY: 'edit-cate/:id',
+
+    PRODUCTS: 'products',
+    ADD_PRODUCTS:'add-product',
+    EDIT_PRODUCTS:'edit-product/:id'
 }

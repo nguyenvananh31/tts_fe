@@ -17,7 +17,7 @@ export const LISTMENU: MenuItem[] = [
   {
     key: 'cate',
     label: (
-      <a href={`http://localhost:5173/admin/${RoutePath.CATEGORY}`}>Quản lý danh mục</a>
+      <a href={`http://localhost:5173/${RoutePath.CATEGORY}`}>Quản lý danh mục</a>
     ),
     icon: <FileTextOutlined />,
   },

@@ -3,35 +3,18 @@ import Axios from "../../../configs/axios";
 import { Icate } from "../../../interFaces/categories";
 import { Button, message, Popconfirm, Skeleton, Spin, Table } from "antd";
 import { DeleteOutlined, EditFilled, FileAddOutlined } from "@ant-design/icons";
-import ModalComponentCate from "./util/modalCate";
-import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const DashboardCate = () => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [selectedCate, setSelectedCate] = useState<Icate | null>(null);
   const queryClient = useQueryClient()
   const [messageApi, contextHolder] = message.useMessage();
+  const navigator = useNavigate()
 
-  const handleAddNew = () => {
-    setSelectedCate(null);
-    setIsModalVisible(true);
-  };
-
-  const handleEdit = (cate: Icate) => {
-    setSelectedCate(cate);
-    setIsModalVisible(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalVisible(false);
-  };
-
-
-  const { data, isLoading, isError, error } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["categories"],
     queryFn: async () => {
       try {
-        return await Axios("/categories");
+        return await Axios.get("/categories");
       } catch (error) {
         throw new Error(`Error fetching categories :${error}`);
       }
@@ -83,7 +66,7 @@ const DashboardCate = () => {
       key: "action",
       render: (cate: Icate) => (
         <>
-          <Button onClick={() => handleEdit(cate)}><EditFilled /></Button>
+          <Button onClick={() => {navigator(`/edit-cate/${cate.id}`)}}><EditFilled /></Button>
           <Popconfirm
             title="Bạn có chắc muốn xóa không?"
             onConfirm={()=>handleDelete(cate.id!)}
@@ -108,17 +91,11 @@ const DashboardCate = () => {
     );
   }
 
-  if (isError) {
-    return (
-      <div className="content">
-        <p>Đã xảy ra l��i: {error.message}</p>
-      </div>
-    );
-  }
+  
   return (
     <>
     {contextHolder}
-    <Button type="primary" className="m-2" onClick={handleAddNew}>
+    <Button type="primary" className="m-2" onClick={()=>{navigator(`add-cate`)}}>
         <FileAddOutlined /> Thêm Mới Cates
       </Button>
       <Table
@@ -126,11 +103,7 @@ const DashboardCate = () => {
         dataSource={dataTable}
         showSorterTooltip={{ target: "sorter-icon" }}
       />
-       <ModalComponentCate
-        visible={isModalVisible}
-        onClose={handleCloseModal}
-        cates={selectedCate}
-      />
+ 
     </>
 
   )

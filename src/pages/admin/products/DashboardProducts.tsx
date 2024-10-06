@@ -1,44 +1,140 @@
-import { useProduct } from "../../../hook/useProduct"
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import Axios from '../../../configs/axios';
+import { IProduct } from '../../../interFaces/products';
+import { Button, Image, Popconfirm, Skeleton, Space, Spin, Table } from 'antd';
+import { FileAddOutlined, ZoomInOutlined} from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
 
 const DashboardProducts = () => {
-  const { products } = useProduct();
+  const queryClient = useQueryClient();
+  const navigator = useNavigate()
+  const { data, isError, error, isLoading } = useQuery({
+    queryKey: ["products"],
+    queryFn: async () => {
+      const response = await Axios.get(`/products`);
+      return response.data; 
+    }
+  });
+
+
+  const { mutate, isPending: isDeleting } = useMutation({
+    mutationFn: async (id: number) => {
+      return await Axios.delete(`/products/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+    },
+    onError: () => {
+      console.log('Error deleting product');
+    },
+  });
+
+  const dataTable = data?.map((product: IProduct) => ({
+    key: product.id,
+    ...product
+  }));
+
+  const columns = [
+    {
+      title: 'ID',
+      dataIndex: 'id',
+      key: 'id',
+    },
+    {
+      title: 'Tên sản phẩm',
+      dataIndex: 'name',
+      key: 'name',
+    },
+    {
+      title: 'Giá',
+      dataIndex: 'price',
+      key: 'price',
+    },
+    {
+      title: 'Ảnh',
+      dataIndex: 'image',
+      width: 'auto',
+      align: 'center',
+      render: (_: any, item: any) => {
+        
+        return (
+          <Image
+            style={{
+              objectFit: "cover",
+              width: "120px",
+              height: "80px",
+              borderRadius: "5px",
+            }}
+            src={item.image}
+            preview={{
+              mask: (
+                <Space direction="vertical" align="center">
+                  <ZoomInOutlined />
+                </Space>
+              ),
+            }}
+          />
+        );
+      }
+  
+  },
+    {
+      title: 'Số lượng',
+      dataIndex: 'quantity',
+      key: 'quantity',
+    },
+    {
+      title: 'Mô tả ngắn',
+      dataIndex: 'sortdescription',
+      key: 'sortdescription',
+    },
+    {
+      title: 'Hành động',
+      key: 'action',
+      render: (product: IProduct) => (
+        <>
+        
+        <Popconfirm
+          title="Bạn có chắc chắn muốn xóa không?"
+          onConfirm={() => mutate(product.id!)}
+          disabled={isLoading}
+        >
+          <Button danger>Xóa</Button>
+        </Popconfirm>
+
+        <Button>Edit</Button>
+        </>
+      ),
+    }
+  ];
+
+  if (isError) {
+    return (
+      <div className="content">
+        <p>Đã xảy ra lỗi: {error.message}</p>
+      </div>
+    );
+  }
+
+  if (isLoading || isDeleting) {
+    return (
+      <Spin tip="Đang tải dữ liệu...">
+        <div className="content">
+          <Skeleton active />
+        </div>
+      </Spin>
+    );
+  }
 
   return (
-    <div className="">
-      <table className="min-w-full bg-white border border-gray-200">
-        <thead className="bg-gray-100 border-b border-gray-200">
-          <tr>
-            <th className="text-left py-3 px-4 font-semibold w-20  text-gray-700">ID</th>
-            <th className="text-left py-3 px-4 font-semibold w-32 text-gray-700">Product Name</th>
-            <th className="text-left py-3 px-4 font-semibold  text-gray-700">Product Image</th>
-            <th className="text-left py-3 px-4 font-semibold w-20 text-gray-700">Price</th>
-            <th className="text-left py-3 px-4 font-semibold  text-gray-700">Quantity</th>
-            <th className="text-left py-3 px-4 font-semibold  text-gray-700">Description</th>
-            <th className="text-left py-3 px-4 font-semibold  text-gray-700">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {products.map((product, index) => (
-            <tr key={index} className="border-b border-gray-200">
-              <td className="py-3 px-4">{product.id}</td>
-              <td className="py-3 px-4">{product.name}</td>
-              <td className="py-3 px-4 w-3 h-1 "><img src={product.image} alt="" className="h-32" /></td>
-              <td className="py-3 px-4">{product.price}</td>
-              <td className="py-3 px-4 w-24 h-24">{product.quantity}</td>
-              <td className="py-3 px-4 w-24 h-24">{product.description}</td>
-              <td className="py-3 px-4 w-24 h-24">
-                <button className="bg-sky-400 p-3 rounded text-white mr-2">Cập nhật</button>
-                <button className="bg-red-400 p-3 rounded text-white">Xóa</button>
+    <>
+      <Button type="primary" className="m-2" onClick={()=>{navigator(`/add-product`)}}>
+        <FileAddOutlined /> Thêm Mới Sản Phẩm
+      </Button>
+      <Table dataSource={dataTable} columns={columns} />
+      
+    </>
+  );
+};
 
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-
-
-  )
-}
-
-export default DashboardProducts
+export default DashboardProducts;
