@@ -56,6 +56,9 @@ const DashboardProducts = () => {
       width: 'auto',
       align: 'center',
       render: (_: any, item: any) => {
+
+        console.log(item);
+        
         
         return (
           <Image

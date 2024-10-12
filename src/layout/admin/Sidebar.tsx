@@ -1,6 +1,6 @@
 import { Layout, Menu } from "antd";
 import React, { useState } from "react";
-import { LISTMENU } from "./menu";
+import { LISTMENU_ADMIN } from "./menuAdmin";
 
 const { Sider } = Layout;
 
@@ -32,7 +32,7 @@ const Sidebar: React.FC = () => {
         mode="inline"
         theme="light"
         inlineCollapsed={collapsed}
-        items={LISTMENU}
+        items={LISTMENU_ADMIN}
       />
     </Sider>
   );

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import { Form, Input, Button, message, InputNumber, Upload, UploadFile, Select, Card } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -25,8 +25,11 @@ const AddProduct = () => {
     },
   });
 
+  // console.log(categories?.data);
+  
+
   // Mutation cho POST (Thêm sản phẩm)
-  const { mutate: addProduct, isLoading: isAdding } = useMutation({
+  const { mutate: addProduct, isPending: isAdding } = useMutation({
     mutationFn: async (newProduct: FormData) => {
       return await Axios.post("/products", newProduct, {
         headers: {
@@ -55,14 +58,18 @@ const AddProduct = () => {
       formData.append(key, (values as any)[key]);
     });
 
+
+    
+
     // Thêm file vào FormData
     fileList.forEach((file) => {
       if (file.originFileObj) {
-        formData.append("images", file.originFileObj);
+        formData.append("image", file.originFileObj);
       }
     });
 
     addProduct(formData); // Gọi mutation để thêm sản phẩm
+    // console.log(values);
   };
 
   const uploadButton = (
@@ -91,7 +98,7 @@ const AddProduct = () => {
 
           <Form.Item
             label="Ảnh sản phẩm"
-            name="images"
+            name="image"
           >
             <Upload
               listType="picture-card"
@@ -125,7 +132,7 @@ const AddProduct = () => {
             rules={[{ required: true, message: "Vui lòng chọn danh mục!" }]}
           >
             <Select placeholder="Chọn danh mục">
-              {categories?.data.data.map((category) => (
+              {categories?.data.map((category) => (
                 <Select.Option key={category.id} value={category.id}>
                   {category.name}
                 </Select.Option>
