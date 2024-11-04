@@ -1,23 +1,18 @@
-import { Layout } from "antd"
-import { Content, Footer, Header } from "antd/es/layout/layout"
-import { Outlet } from "react-router-dom"
-import Navbar from "./Navbar"
+import { Layout } from 'antd';
+import React from 'react';
+import { Outlet } from 'react-router-dom';
+import Header from '../../components/users/Header';
+import Footer from '../../components/users/Footer';
 
-const LayoutUsers = () => {
+const LayoutUsers: React.FC = () => {
   return (
     <Layout style={{ minHeight: '100vh' }}>
-    <Navbar />
-    <Layout>
 
-      <Content style={{ margin: '24px 24px 0 24px' }}>
-        <Outlet></Outlet>
-      </Content>
-      <Footer style={{ textAlign: 'center' }}>
-        Ant Design ©{new Date().getFullYear()} Created by Ant UED
-      </Footer>
+      <Header />
+      <Outlet />
+      <Footer />
     </Layout>
-  </Layout>
-  )
-}
+  );
+};
 
-export default LayoutUsers
+export default LayoutUsers;
